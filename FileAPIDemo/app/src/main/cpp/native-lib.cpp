@@ -137,6 +137,26 @@ Java_com_example_fileapidemo_MainActivity_stringFromJNI(
 }
 
 
+static void crypt2(string normal_path, string crypt_path)
+{
+    D("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
+    FILE *stream;
+    char msg[]="this is a test";
+    char buf[20];
+    if((stream=fopen(normal_path.c_str(),"w+"))==NULL)
+    {
+        D("Can not open output file %d",stderr);
+    }
+    fwrite(msg,1,strlen(msg)+1,stream);
+
+    fseek(stream,0,SEEK_SET);
+    fread(buf,1,strlen(msg)+1,stream);
+    D("crypt2:fread=%s",buf);
+
+    fclose(stream);
+
+}
+
 JNIEXPORT jint JNICALL
 Java_com_example_fileapidemo_MainActivity_fileEncryptJNI(JNIEnv *env, jclass clazz) {
     // TODO: implement fileEncryptJNI()
@@ -147,7 +167,9 @@ Java_com_example_fileapidemo_MainActivity_fileEncryptJNI(JNIEnv *env, jclass cla
     D("libnative-lib.so的地址 0x%x\r\n",GetLibAddr());
 
     // 加密文件
-    crypt(normal_path,crypt_path);
+    //crypt(normal_path,crypt_path);
+    crypt2(normal_path,crypt_path);
+
 
     return 1;
 
