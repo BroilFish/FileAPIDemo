@@ -1,8 +1,7 @@
 #include <jni.h>
 #include <iostream>
-#include <string>
+#include <string.h>
 #include <stdio.h>
-
 
 
 using namespace std;
@@ -13,8 +12,10 @@ using namespace std;
 #if DEBUG
 #include <android/log.h>
 #include <unistd.h>
+#include <malloc.h>
+#include <stdlib.h>
 
-#  define  D(x...)  __android_log_print(ANDROID_LOG_ERROR,"*****zsy",x)
+#define  D(x...)  __android_log_print(ANDROID_LOG_ERROR,"*****zsy",x)
 #else
 #  define  D(...)  do {} while (0)
 #endif
@@ -27,12 +28,15 @@ extern "C"
 {
 #endif
 
-    // 获取libnative-lib.so的地址
+string normal_path = "/sdcard/a.txt";
+string crypt_path = "/sdcard/a_encrypt.txt";
+
+// 获取libnative-lib.so的地址
 unsigned int GetLibAddr()
 
 {
 
-    char *szName = "libnative-lib.so";
+    const char *szName = "libnative-lib.so";
 
     int nPid = getpid();
 
@@ -44,7 +48,7 @@ unsigned int GetLibAddr()
 
     FILE *fp = fopen(buffer,"r");
 
-    if (fp != nullptr)
+    if (fp != NULL)
 
     {
 
@@ -62,7 +66,7 @@ unsigned int GetLibAddr()
 
                 temp = strtok(buffer,"-");
 
-                nBase = strtoul(temp,nullptr,16);
+                nBase = strtoul(temp,NULL,16);
 
                 D("BASE IS 0x%x\r\n",nBase);
 
@@ -157,12 +161,56 @@ static void crypt2(string normal_path, string crypt_path)
 
 }
 
+void readFile(char *path) {
+    char a[30];
+    FILE *fp;
+    if ((fp = fopen(path, "r")) == NULL) {
+        D("*****zsy 读文件函数：文件打开失败！");
+    }
+
+    fseek(fp, 0L, SEEK_END);
+    int len = ftell(fp);
+    rewind(fp);
+
+    if (fread(a, 1, len, fp) != len) {
+        D("****zsy 读文件函数：读取失败！");
+    } else
+    {
+        D("****zsy 读文件内容：%s", a);
+    }
+
+    fclose(fp);
+
+}
+
+
+void writeFile(char p[], char *path) {
+    FILE *fp;
+    if ((fp = fopen(path, "wb")) == NULL) {
+        D("*****zsy 写文件 打开文件失败");
+        //exit(0);
+    }
+
+    int a=fwrite(p, sizeof(char), strlen(p)+1, fp);
+//    D("*****zsy a=%d",a);
+//    D("*****zsy sizeof(p)/ sizeof(char)=%d",sizeof(p)/ sizeof(char));
+//    D("*****zsy sizep=%d",sizeof(p));
+//    D("*****zsy sizec=%d",sizeof(char));
+//    D("*****zsy strlen=%d",strlen(p));
+    if ( a < 0) {
+        D("*****zsy 写文件 写入失败");
+    } else
+    {
+        D("*****zsy 写文件  %s",p);
+    }
+    fclose(fp);
+}
+
+
+
 JNIEXPORT jint JNICALL
 Java_com_example_fileapidemo_MainActivity_fileEncryptJNI(JNIEnv *env, jclass clazz) {
     // TODO: implement fileEncryptJNI()
-
-    string normal_path = "/sdcard/a.txt";
-    string crypt_path = "/sdcard/a_encrypt.txt";
 
     D("libnative-lib.so的地址 0x%x\r\n",GetLibAddr());
 
@@ -181,3 +229,22 @@ Java_com_example_fileapidemo_MainActivity_fileEncryptJNI(JNIEnv *env, jclass cla
 #endif
 #endif
 
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_fileapidemo_MainActivity_fileReadJNI(JNIEnv *env, jclass clazz) {
+    // TODO: implement fileReadJNI()
+
+    readFile((char *)normal_path.c_str());
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_fileapidemo_MainActivity_fileWriteJNI(JNIEnv *env, jclass clazz) {
+    // TODO: implement fileWriteJNI()
+
+    char p[]="this is write demo";
+    D("*****zsy p.length:%d", sizeof(p));
+    writeFile(p,(char *)normal_path.c_str());
+
+}

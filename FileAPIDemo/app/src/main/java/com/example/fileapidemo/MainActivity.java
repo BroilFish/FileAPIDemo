@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
      */
     public native String stringFromJNI();
     public static native int fileEncryptJNI();
+    public static native void fileReadJNI();
+    public static native void fileWriteJNI();
 
 
 
@@ -40,6 +42,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void FileRead(View view) {
+
+        fileReadJNI();
+
+    }
+
+    public void FileWrite(View view) {
+
+        fileWriteJNI();
+    }
 }
 
 

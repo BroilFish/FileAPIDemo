@@ -6,6 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <Button
+        android:id="@+id/btn_write"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="39dp"
+        android:text="文件写"
+        android:onClick="FileWrite"
+        app:layout_constraintStart_toStartOf="@+id/btn_read"
+        app:layout_constraintTop_toBottomOf="@+id/btn_read" />
+
     <TextView
         android:id="@+id/sample_text"
         android:layout_width="wrap_content"
@@ -25,6 +36,17 @@
         android:text="文件加密"
         app:layout_constraintBottom_toTopOf="@+id/sample_text"
         app:layout_constraintEnd_toEndOf="@+id/sample_text" />
+
+    <Button
+        android:id="@+id/btn_read"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="11dp"
+        android:text="文件读"
+        android:onClick="FileRead"
+        app:layout_constraintEnd_toEndOf="@+id/sample_text"
+        app:layout_constraintTop_toBottomOf="@+id/sample_text" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
